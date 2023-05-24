@@ -1,0 +1,2 @@
+# GET http://localhost:3001/api/persons
+GET https://phonebook-backend-adastros.fly.dev/api/persons
