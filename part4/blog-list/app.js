@@ -39,6 +39,13 @@ app.use("/api/login", loginRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", usersRouter);
 
+// If testing, make the /reset route available to
+// clear all users and blogs from test database
+if (process.env.NODE_ENV === "test") {
+  const testingRouter = require("./controllers/testing.js");
+  app.use("/api/testing", testingRouter);
+}
+
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 

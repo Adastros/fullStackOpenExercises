@@ -20,6 +20,7 @@ blogRouter.get("/", async (request, response) => {
 // Create new blog document
 blogRouter.post("/", middleware.userExtractor, async (request, response) => {
   if (request.body.title === undefined || request.body.author === undefined) {
+    logger.info("request body undefined");
     return response.status(400).end();
   }
 
