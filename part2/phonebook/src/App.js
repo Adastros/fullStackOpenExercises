@@ -15,10 +15,10 @@ const App = () => {
   const [isError, setIsError] = useState(false);
 
   const notificationMessages = {
-    add: `${newName} was successfully added`,
-    update: `${newName}'s number was successfully updated`,
-    delete: `${newName} was successfully deleted;`,
-    error: `${newName} was already removed from the server`,
+    add: ` was successfully added`,
+    update: `'s number was successfully updated`,
+    delete: ` was successfully deleted`,
+    error: ` was already removed from the server`,
   };
 
   useEffect(() => {
@@ -38,10 +38,19 @@ const App = () => {
               newNumber
             )
           )
-          .then(updateNumbersList);
-
-        setMessage(notificationMessages.update);
-        setIsError(false);
+          .then(() => {
+            updateNumbersList();
+            setMessage(`${newName}${notificationMessages.update}`);
+            setIsError(false);
+            setNewName("");
+            setNewNumber("");
+          })
+          .catch((error) => {
+            console.log(error.response.data.error);
+            setMessage(error.response.data.error);
+            setIsError(true);
+            setNewNumber("");
+          });
       }
     } else {
       const newPerson = {
@@ -49,13 +58,25 @@ const App = () => {
         number: newNumber,
       };
 
-      phonebookService.postToServer(newPerson).then(updateNumbersList);
-      setMessage(notificationMessages.add);
-      setIsError(false);
+      phonebookService
+        .postToServer(newPerson)
+        .then(() => {
+          updateNumbersList();
+          setMessage(`${newName}${notificationMessages.add}`);
+          setIsError(false);
+          setNewName("");
+          setNewNumber("");
+        })
+        .catch((error) => {
+          console.log(error.response.data.error);
+          setMessage(error.response.data.error);
+          setIsError(true);
+          setNewNumber("");
+        });
     }
 
-    setNewName("");
-    setNewNumber("");
+    // setNewName("");
+    // setNewNumber("");
     clearNotification();
     e.preventDefault();
   };
@@ -116,11 +137,11 @@ const App = () => {
         .deleteFromServer(personToDelete.id)
         .then(updateNumbersList)
         .then(() => {
-          setMessage(notificationMessages.delete);
+          setMessage(`${personToDelete.name}${notificationMessages.delete}`);
           setIsError(false);
         })
         .catch(() => {
-          setMessage(notificationMessages.error);
+          setMessage(`${personToDelete.name}${notificationMessages.error}`);
           setIsError(true);
           updateNumbersList();
         });
